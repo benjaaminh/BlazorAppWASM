@@ -1,34 +1,42 @@
 ﻿@page "/weather"
-<!--@using BlazorApp1.Services-->
+@using BlazorAppWASM.Services;
 @inject WeatherService WeatherService;
+@inject CountryService CountryService;
 @attribute [StreamRendering]
 
 <PageTitle>Weather</PageTitle>
 
 <h1>Weather</h1>
 
-<p>This component demonstrates showing data.</p>
-<button @onclick="FetchWeather">Get Weather</button>
+
 @if (WeatherMessage == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <p>@WeatherMessage</p>
+    <div>
+        <h2>@WeatherMessage</h2>
+        <img src=@WeatherIcon />
+        <!--to be continued with more data-->
+    </div>
+    
 }
 
 @code {
 
     private string WeatherMessage { get; set; }
+    private string WeatherIcon { get; set; }
 
-    private async Task FetchWeather()
+    protected override async Task OnInitializedAsync()
     {
-        var country = "Finland"; // or get city from user input
+        var country = "Finland"; //finland as example
         var weatherData = await WeatherService.GetWeatherAsync(country);
-        if (weatherData != null)
+        var countryData = await CountryService.GetCountryAsync(country);
+        if (weatherData != null && countryData!= null)
         {
-            WeatherMessage = $"Current temperature in {weatherData.capital}: {weatherData.main.temp}°C";
+            WeatherMessage = $"Current temperature in {countryData.capital[0]}: {weatherData.main.temp}°C";
+            WeatherIcon = $"https://openweathermap.org/img/wn/{weatherData.weather[0].icon}@2x.png";
         }
         else
         {
