@@ -18,8 +18,8 @@ public class WeatherService
 
         try
         {
-            
 
+            var apiKey = "2";
             var apiURL = $"https://api.openweathermap.org/data/2.5/weather?q={country}&units=metric&appid={apiKey}";
             Console.WriteLine($"API Key: {apiKey}");
             return await _httpClient.GetFromJsonAsync<WeatherData>(apiURL);
